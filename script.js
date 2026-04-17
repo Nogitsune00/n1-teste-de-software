@@ -50,8 +50,18 @@ function cadastrarProduto(produto /* perguntar pro professor se precisa passar p
 }
 
 function excluirProduto(id){
+    const index = produtos.findIndex(item => item.id === id);
 
-
+    if(index === -1){
+        return "Produto não encontrado"
+    }else{
+        if(confirm(`Deseja realmente excluir o produto de id ${id}?`)){
+            produtos.splice(index, 1);
+            listarProdutos();
+        }else{
+            return "Operação cancelada"
+        }
+    }
 }
 
 function editarProduto(id){
