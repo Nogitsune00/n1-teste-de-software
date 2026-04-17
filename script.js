@@ -25,10 +25,18 @@ function cadastrarProduto(produto /* perguntar pro professor se precisa passar p
         alert("Por favor, digite um número válido");
         pEstoque.focus();
         return "Valor inválido";
+    } else if(estoque <= 0){
+        alert("O estoque deve ser um número positivo")
+        pEstoque.focus();
+        return "Valor inválido";
     }
 
     if(isNaN(preco)){
         alert("Por favor, digite um número válido");
+        pPreco.focus();
+        return "Valor inválido";
+    } else if(preco <= 0.00){
+        alert("O preço deve ser um número positivo")
         pPreco.focus();
         return "Valor inválido";
     }
@@ -79,6 +87,53 @@ function editarProduto(id){
     document.getElementById("editCategoria").value = produtos[index].categoria;
     
     document.getElementById("modalEdicao").style.display = "block";
+}
+
+function atualizarProduto(){
+    const id = document.getElementById("EditId").value;
+    const index = produtos.findIndex(item=> item.id == id);
+
+    if(index === -1){
+        alert("Erro ao editar o produto");
+        return "Erro ao editar o produto";
+    }
+
+    const nome = document.getElementById('editNome');
+    const preco = document.getElementById('editPreco');
+    const estoque = document.getElementById('editEstoque');
+    const categoria = document.getElementById('editCategoria');
+
+    if(isNaN(parseInt(estoque.value))){
+        alert("Por favor, digite um número válido");
+        estoque.focus();
+        return "Valor inválido";
+    } else if(parseInt(estoque.value) <= 0){
+        alert("O estoque deve ser um número positivo")
+        estoque.focus();
+        return "Valor inválido";
+    }
+
+    if(isNaN(parseFloat(preco.value))){
+        alert("Por favor, digite um número válido");
+        preco.focus();
+        return "Valor inválido";
+    } else if(parseFloat(preco.value) <= 0.00){
+        alert("O preço deve ser um número positivo")
+        preco.focus();
+        return "Valor inválido";
+    }
+
+    if(nome === '' || categoria === ''){
+        return "Dados obrigatórios"
+    }
+
+    produtos[index].nome = nome
+    produtos[index].preco = preco
+    produtos[index].estoque = estoque
+    produtos[index].categoria = categoria
+
+    document.getElementById("modalEdicao").style.display = "none";
+    listarProdutos();
 }
 
 function listarProdutos(){
