@@ -65,8 +65,20 @@ function excluirProduto(id){
 }
 
 function editarProduto(id){
+    const index = produtos.findIndex(item => item.id === id);
 
-
+    if(index === -1){
+        alert("Produto não encontrado");
+        return "Produto não encontrado"
+    }
+    
+    document.getElementById("editId").value = produtos[index].id;
+    document.getElementById("editNome").value = produtos[index].nome;
+    document.getElementById("editPreco").value = produtos[index].preco;
+    document.getElementById("editEstoque").value = produtos[index].estoque;
+    document.getElementById("editCategoria").value = produtos[index].categoria;
+    
+    document.getElementById("modalEdicao").style.display = "block";
 }
 
 function listarProdutos(){
