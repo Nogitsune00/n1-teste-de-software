@@ -3,6 +3,7 @@ let produtos = [];
 
 // variaveis globais
 let idCounter = 1000;
+const listaProdutos = document.getElementById('produtos');
 
 // funções relacionadas ao cadastro de produtos
 
@@ -42,6 +43,7 @@ function cadastrarProduto(produto /* perguntar pro professor se precisa passar p
 
     produtos.push(info);
 
+    // adicionar no html um formulario, que vai conter os campos de cadastro de produto, com o id abaixo 
     document.getElementById('FormCadastro').reset();
 
     listarProdutos();
@@ -58,8 +60,38 @@ function editarProduto(id){
 }
 
 function listarProdutos(){
+    listaProdutos.innerHTML = `<tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Categoria</th>
+            <th>Ações</th>
+        </tr>`;
 
+    if (produtos.length === 0){
+        const row = document.createElement('tr');
+        row.innerHTML = '<tr><td colspan="6">Nenhum produto cadastrado.</td></tr>';
+        listaProdutos.appendChild(row);
+        return "Não há produtos registrados";
+    }
 
+    produtos.forEach((produto) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${produto.id}</td>
+            <td>${produto.nome}</td>
+            <td>Preço: ${produto.preco}</td>
+            <td>Estoque: ${produto.estoque}</td>
+            <td>${produto.categoria}</td>
+            <td class="">
+                <button onclick="editarProduto('${produto.id}')">Editar</button>
+                <button onclick="excluirProduto('${produto.id}')">Excluir</button>
+            </td>
+        `;
+
+        listaProdutos.appendChild(row);
+    });
 }
 
 function buscarProdutoPorId(id){
