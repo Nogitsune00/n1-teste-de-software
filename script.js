@@ -8,37 +8,43 @@ let idCounter = 1000;
 
 // No HTML adicionar um onclick="cadastrarProduto()"
 function cadastrarProduto(produto /* perguntar pro professor se precisa passar parametro*/ ){
-    const pNome = document.getElementById('nomeProduto');
-    const pPreco = document.getElementById('precoProduto');
-    const pEstoque = document.getElementById('estoqueProduto');
-    const pCategoria = document.getElementById('categoriaProduto');
+    // adicionar no HTML campos de input para as variaveis abaixo, nesses inputs adicionar o valor de id
+    // igual ao valor presente entre aspas simples.
+    const pNome = document.getElementById('nome');
+    const pPreco = document.getElementById('preco');
+    const pEstoque = document.getElementById('estoque');
+    const pCategoria = document.getElementById('categoria');
+    // preferencialmente adicionar a categoria como valores pré-definidos
 
     const preco = parseFloat(pPreco.value);
     const estoque = parseInt(pEstoque.value);
-    let id =  idCounter ++;
+    let id;
     
     if(isNaN(estoque)){
         alert("Por favor, digite um número válido");
         pEstoque.focus();
-        return;
+        return "Valor inválido";
     }
 
     if(isNaN(preco)){
         alert("Por favor, digite um número válido");
         pPreco.focus();
-        return;
+        return "Valor inválido";
     }
+
+    if(pNome === '' || pCategoria === ''){
+        return "Dados obrigatórios"
+    }
+
+    id = idCounter++;
 
     let info = {id: id, nome: pNome, preco: preco, estoque: estoque, categoria: pCategoria };
 
     produtos.push(info);
 
-    pNome.value = '';
-    pPreco.value = '';
-    pEstoque.value = '';
-    pCategoria.value = '';
+    document.getElementById('FormCadastro').reset();
 
-    idCounter++;
+    listarProdutos();
 }
 
 function excluirProduto(id){
