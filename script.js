@@ -136,7 +136,7 @@ function atualizarProduto(){
     listarProdutos();
 }
 
-function listarProdutos(){
+function listarProdutos(lista = produtos){
     listaProdutos.innerHTML = `<tr>
             <th>ID</th>
             <th>Nome</th>
@@ -146,7 +146,7 @@ function listarProdutos(){
             <th>Ações</th>
         </tr>`;
 
-    if (produtos.length === 0){
+    if (lista.length === 0){
         const row = document.createElement('tr');
         row.innerHTML = '<tr><td colspan="6">Nenhum produto cadastrado.</td></tr>';
         listaProdutos.appendChild(row);
@@ -172,8 +172,28 @@ function listarProdutos(){
 }
 
 function buscarProdutoPorId(id){
+    const idBusca = id.toString();
 
+    const resultado = produtos.filter(produto => 
+        produto.id.toString() === idBusca
+    );
 
+    if(resultado.length === 0){
+        listarProdutos([]);
+        return "Produto não encontrado";
+    }
+
+    listarProdutos(resultado);
+    return resultado;
+}
+
+// Adicionar essa função quando o icone ou botão de busca for pressionado
+// exemplo de implementação: 
+// <input type="text" id="search" placeholder="Digite o ID">
+// <button onclick="buscar()">Buscar</button>
+function buscar(){
+    const valor = document.getElementById("search").value;
+    buscarProdutoPorId(valor);
 }
 
 // funções relacionadas ao carrinho de compras
