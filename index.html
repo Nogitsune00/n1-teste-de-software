@@ -7,28 +7,118 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1>Sistema de Vendas</h1>
+
+    <section>
+    <form id="FormCadastro" onsubmit="event.preventDefault();">
+            <label>Nome:</label>
+            <input type="text" id="nome" required>
+
+            <label>Preço (R$):</label>
+            <input type="number" id="preco" step="0.01" required>
+
+            <label>Estoque:</label>
+            <input type="number" id="estoque" required>
+
+            <label>Categoria:</label>
+            <select id="categoria">
+                <option value="">Selecione...</option>
+                <option value="Eletrônicos">Eletrônicos</option>
+                <option value="Periféricos">Periféricos</option>
+                <option value="Hardware">Hardware</option>
+            </select>
+
+            <br><br>
+            <button type="button" onclick="cadastrarProduto()">Cadastrar Produto</button>
+        </form>
+    </section>
+
+    <div>
+            <input type="text" id="search" placeholder="Digite o ID">
+            <button onclick="buscar()">Buscar Produto</button>
+            <button onclick="listarProdutos()">Limpar Busca</button>
+        </div>
+        <br>
+
+    <hr>
+
+    <section>
+        <h2>Catálogo de Produtos</h2>
+        <table border="1" width="100%">
+            <tbody id="produtos">
+                <tr><td colspan="6">Nenhum produto cadastrado.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>Seu Carrinho de Compras</h2>
+        
+        <div>
+            <h3>Adicionar Item</h3>
+            <input type="number" id="idProdutoCarrinho" placeholder="ID do Produto">
+            <input type="number" id="quantidadeCarrinho" placeholder="Quantidade">
+            <button onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
+        </div>
+
+        <div>
+            <h3>Remover Item</h3>
+            <input type="number" id="idRemoverCarrinho" placeholder="ID do Produto no Carrinho">
+            <button onclick="removerDoCarrinho()">Remover do Carrinho</button>
+        </div>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>Finalizar Compra</h2>
+        <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
+        <input type="text" id="cupomDesconto" placeholder="Cupom (Ex: DESC10)">
+        
+        <br><br>
+        <button onclick="fecharPedido()">Fechar Pedido</button>
+    </section>
+    
     <div id="modalEdicao" class="modal">
         <div class="modal-conteudo">
             <h2>Editar Produto</h2>
 
             <input type="hidden" id="editId">
 
-            <label>Nome:</label>
-            <input type="text" id="editNome">
+            <div class="form-group-modal">
+                <label>Nome:</label>
+                <input type="text" id="editNome">
+            </div>
 
-            <label>Preço:</label>
-            <input type="number" id="editPreco">
+            <div class="form-group-modal">
+                <label>Preço:</label>
+                <input type="number" id="editPreco" step="0.01">
+            </div>
 
-            <label>Estoque:</label>
-            <input type="number" id="editEstoque">
+            <div class="form-group-modal">
+                <label>Estoque:</label>
+                <input type="number" id="editEstoque">
+            </div>
 
-            <label>Categoria:</label>
-            <input type="text" id="editCategoria">
+            <div class="form-group-modal">
+                <label>Categoria:</label>
+                <select id="editCategoria">
+                    <option value="">Selecione...</option>
+                    <option value="Eletrônicos">Eletrônicos</option>
+                    <option value="Periféricos">Periféricos</option>
+                    <option value="Hardware">Hardware</option>
+                </select>
+            </div>
 
-            <br><br>
-            <button onclick="salvarEdicao()">Salvar</button>
-            <button onclick="fecharModal()">Cancelar</button>
+            <br>
+            <div class="botoes-modal">
+                <button onclick="atualizarProduto()">Salvar</button>
+                <button onclick="document.getElementById('modalEdicao').style.display='none'">Cancelar</button>
+            </div>
         </div>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -41,13 +41,14 @@ function cadastrarProduto(produto /* perguntar pro professor se precisa passar p
         return "Valor inválido";
     }
 
-    if(pNome === '' || pCategoria === ''){
+    if(pNome.value === '' || pCategoria.value === ''){
+        alert("Por favor, preencha o Nome e a Categoria do produto!");
         return "Dados obrigatórios"
     }
 
     id = idCounter++;
 
-    let info = {id: id, nome: pNome, preco: preco, estoque: estoque, categoria: pCategoria };
+    let info = {id: id, nome: pNome.value, preco: preco, estoque: estoque, categoria: pCategoria.value }; // tive que colocar .value no nome e categoria
 
     produtos.push(info);
 
@@ -90,7 +91,7 @@ function editarProduto(id){
 }
 
 function atualizarProduto(){
-    const id = document.getElementById("EditId").value;
+    const id = document.getElementById("editId").value;
     const index = produtos.findIndex(item=> item.id == id);
 
     if(index === -1){
@@ -104,7 +105,7 @@ function atualizarProduto(){
     const categoria = document.getElementById('editCategoria');
 
     if(isNaN(parseInt(estoque.value))){
-        alert("Por favor, digite um número válido");
+        alert("Por favor, digite um número válido");                                                                                                                                                                
         estoque.focus();
         return "Valor inválido";
     } else if(parseInt(estoque.value) <= 0){
@@ -126,11 +127,11 @@ function atualizarProduto(){
     if(nome === '' || categoria === ''){
         return "Dados obrigatórios"
     }
-
-    produtos[index].nome = nome
-    produtos[index].preco = preco
-    produtos[index].estoque = estoque
-    produtos[index].categoria = categoria
+    //tive que colocar .value pra aparecer o valor corretamente depois de clicar em salvar na edicao
+    produtos[index].nome = nome.value
+    produtos[index].preco = parseFloat(preco.value)
+    produtos[index].estoque = parseInt(estoque.value)
+    produtos[index].categoria = categoria.value
 
     document.getElementById("modalEdicao").style.display = "none";
     listarProdutos();
@@ -153,17 +154,17 @@ function listarProdutos(lista = produtos){
         return "Não há produtos registrados";
     }
 
-    produtos.forEach((produto) => {
+    lista.forEach((produto) => { // nas linhas 166 e 167 tirei os '' do (${produto.id}) pois estavam transformando o id em texto
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${produto.id}</td>
             <td>${produto.nome}</td>
-            <td>Preço: ${produto.preco}</td>
-            <td>Estoque: ${produto.estoque}</td>
+            <td>${produto.preco}</td>
+            <td>${produto.estoque}</td>
             <td>${produto.categoria}</td>
-            <td class="">
-                <button onclick="editarProduto('${produto.id}')">Editar</button>
-                <button onclick="excluirProduto('${produto.id}')">Excluir</button>
+            <td class=""> 
+                <button onclick="editarProduto(${produto.id})">Editar</button>
+                <button onclick="excluirProduto(${produto.id})">Excluir</button>
             </td>
         `;
 
@@ -197,8 +198,145 @@ function buscar(){
 }
 
 // funções relacionadas ao carrinho de compras
+let carrinhoDeCompras = [];
 
+function adicionarAoCarrinho() {
+    const cIdProduto = document.getElementById('idProdutoCarrinho');
+    const cQuantidade = document.getElementById('quantidadeCarrinho');
 
+    const idProduto = parseInt(cIdProduto.value);
+    const quantidade = parseInt(cQuantidade.value);
+
+    if (isNaN(idProduto) || isNaN(quantidade)) {
+        alert("Por favor, digite números válidos para ID e Quantidade.");
+        cIdProduto.focus();
+        return "Valor inválido";
+    }
+
+    if (quantidade <= 0) {
+        alert("A quantidade deve ser um número positivo.");
+        cQuantidade.focus();
+        return "Quantidade inválida";
+    }
+
+    const index = produtos.findIndex(item => item.id === idProduto);
+
+    if (index === -1) {
+        alert("Erro: Produto não encontrado no catálogo!");
+        return "Produto não encontrado";
+    }
+
+    if (produtos[index].estoque <= 0) {
+        alert("Erro: Produto sem estoque.");
+        return "Sem estoque";
+    }
+
+    if (quantidade > produtos[index].estoque) {
+        alert("Erro: Quantidade solicitada é maior que o estoque disponível.");
+        return "Estoque insuficiente";
+    }
+
+    let infoCarrinho = { produto: produtos[index], quantidade: quantidade };
+    carrinhoDeCompras.push(infoCarrinho);
+
+    cIdProduto.value = '';
+    cQuantidade.value = '';
+
+    alert("Produto adicionado ao carrinho!");
+    return "Produto adicionado ao carrinho";
+}
+
+function removerDoCarrinho() {
+    const cIdRemover = document.getElementById('idRemoverCarrinho');
+    const idNumero = parseInt(cIdRemover.value);
+
+    if (isNaN(idNumero)) {
+        alert("Por favor, digite o ID do produto que você quer remover.");
+        cIdRemover.focus();
+        return "ID vazio";
+    }
+
+    const index = carrinhoDeCompras.findIndex(item => item.produto.id === idNumero);
+
+    if (index === -1) {
+        alert(`Erro: O produto de ID ${idNumero} não está no seu carrinho.`);
+        return "Produto não encontrado no carrinho";
+    } else {
+        if (confirm(`Deseja realmente remover o produto de id ${idNumero} do carrinho?`)) {
+            carrinhoDeCompras.splice(index, 1);
+            alert("Produto removido com sucesso!");
+            cIdRemover.value = '';
+            return "Produto removido com sucesso";
+        } else {
+            return "Operação cancelada";
+        }
+    }
+}
+
+function calcularSubtotal() {
+    let subtotal = 0;
+    
+    for (let item of carrinhoDeCompras) {
+        subtotal += (item.produto.preco * item.quantidade);
+    }
+    
+    return subtotal;
+}
 
 
 // funções relacionadas ao fechamento do pedido
+
+function aplicarCupom(valorTotal, cupomDigitado) {
+    if (cupomDigitado !== "" && cupomDigitado !== "DESC10") {
+        alert("Erro: Cupom inválido.");
+        return "Cupom inválido"; 
+    }
+
+    if (cupomDigitado === "DESC10") {
+        return valorTotal - (valorTotal * 0.10);
+    }
+
+    return valorTotal; 
+}
+
+function calcularFrete(valorCompra) {
+    if (valorCompra >= 200) {
+        return 0.00;
+    }
+    return 35.00; 
+}
+
+function fecharPedido() {
+    const pNomeCliente = document.getElementById('nomeCliente');
+    const pCupom = document.getElementById('cupomDesconto');
+
+    if (carrinhoDeCompras.length === 0) {
+        alert("Erro: O carrinho está vazio. Adicione produtos antes de fechar o pedido.");
+        return "Carrinho vazio";
+    }
+
+    if (pNomeCliente.value === "") {
+        alert("Por favor, digite o nome do cliente.");
+        pNomeCliente.focus();
+        return "Dados obrigatórios";
+    }
+
+    let valorSubtotal = calcularSubtotal();
+    let retornoCupom = aplicarCupom(valorSubtotal, pCupom.value);
+    
+    if (retornoCupom === "Cupom inválido") {
+        return "Erro no cupom";
+    }
+
+    let valorComDesconto = retornoCupom;
+    let valorDoFrete = calcularFrete(valorComDesconto);
+    let totalFinal = valorComDesconto + valorDoFrete;
+
+    alert(`Pedido fechado com sucesso, ${pNomeCliente.value}!\nSubtotal: R$ ${valorSubtotal.toFixed(2)}\nFrete: R$ ${valorDoFrete.toFixed(2)}\nTotal Pago: R$ ${totalFinal.toFixed(2)}`);
+
+    pNomeCliente.value = '';
+    pCupom.value = '';
+    carrinhoDeCompras = []; 
+
+    return "Pedido finalizado com sucesso";
+}
