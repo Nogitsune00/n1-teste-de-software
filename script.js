@@ -72,23 +72,17 @@ let produtos = [
   }
 ];
 
-// let info = {id: id, nome: pNome.value, preco: preco, estoque: estoque, categoria: pCategoria.value }
-
 // variaveis globais
 let idCounter = 1000;
 const listaProdutos = document.getElementById('produtos');
 
 // funções relacionadas ao cadastro de produtos
 
-// No HTML adicionar um onclick="cadastrarProduto()"
 function cadastrarProduto(){
-    // adicionar no HTML campos de input para as variaveis abaixo, nesses inputs adicionar o valor de id
-    // igual ao valor presente entre aspas simples.
     const pNome = document.getElementById('nome');
     const pPreco = document.getElementById('preco');
     const pEstoque = document.getElementById('estoque');
     const pCategoria = document.getElementById('categoria');
-    // preferencialmente adicionar a categoria como valores pré-definidos
 
     const preco = parseFloat(pPreco.value);
     const estoque = parseInt(pEstoque.value);
@@ -121,11 +115,10 @@ function cadastrarProduto(){
 
     id = idCounter++;
 
-    let info = {id: id, nome: pNome.value, preco: preco, estoque: estoque, categoria: pCategoria.value }; // tive que colocar .value no nome e categoria
+    let info = {id: id, nome: pNome.value, preco: preco, estoque: estoque, categoria: pCategoria.value };
 
     produtos.push(info);
 
-    // adicionar no html um formulario, que vai conter os campos de cadastro de produto, com o id abaixo 
     document.getElementById('FormCadastro').reset();
 
     listarProdutos();
@@ -200,7 +193,7 @@ function atualizarProduto(){
     if(nome === '' || categoria === ''){
         return "Dados obrigatórios"
     }
-    //tive que colocar .value pra aparecer o valor corretamente depois de clicar em salvar na edicao
+
     produtos[index].nome = nome.value
     produtos[index].preco = parseFloat(preco.value)
     produtos[index].estoque = parseInt(estoque.value)
@@ -227,7 +220,7 @@ function listarProdutos(lista = produtos){
         return "Não há produtos registrados";
     }
 
-    lista.forEach((produto) => { // nas linhas 166 e 167 tirei os '' do (${produto.id}) pois estavam transformando o id em texto
+    lista.forEach((produto) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${produto.id}</td>
@@ -261,10 +254,6 @@ function buscarProdutoPorId(id){
     return resultado;
 }
 
-// Adicionar essa função quando o icone ou botão de busca for pressionado
-// exemplo de implementação: 
-// <input type="text" id="search" placeholder="Digite o ID">
-// <button onclick="buscar()">Buscar</button>
 function buscar(){
     const valor = document.getElementById("search").value;
     buscarProdutoPorId(valor);
@@ -355,7 +344,6 @@ function calcularSubtotal() {
     
     return subtotal;
 }
-
 
 // funções relacionadas ao fechamento do pedido
 
