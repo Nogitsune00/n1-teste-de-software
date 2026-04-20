@@ -1,5 +1,78 @@
 // Base de dados
-let produtos = [];
+let produtos = [
+  {
+    id: 990,
+    nome: 'Teclado Mecânico',
+    preco: 250.00,
+    estoque: 30,
+    categoria: 'Periféricos'
+  },
+  {
+    id: 991,
+    nome: 'Monitor 24"',
+    preco: 900.00,
+    estoque: 15,
+    categoria: 'Eletrônicos'
+  },
+  {
+    id: 992,
+    nome: 'Headset Gamer',
+    preco: 180.00,
+    estoque: 50,
+    categoria: 'Periféricos'
+  },
+  {
+    id: 993,
+    nome: 'Placa de Vídeo RTX 3060',
+    preco: 2200.00,
+    estoque: 8,
+    categoria: 'Hardware'
+  },
+  {
+    id: 994,
+    nome: 'SSD 1TB',
+    preco: 400.00,
+    estoque: 25,
+    categoria: 'Hardware'
+  },
+  {
+    id: 995,
+    nome: 'Mousepad Gamer',
+    preco: 40.00,
+    estoque: 100,
+    categoria: 'Periféricos'
+  },
+  {
+    id: 996,
+    nome: 'Notebook i5',
+    preco: 3200.00,
+    estoque: 10,
+    categoria: 'Eletrônicos'
+  },
+  {
+    id: 997,
+    nome: 'Memória RAM 16GB',
+    preco: 300.00,
+    estoque: 40,
+    categoria: 'Hardware'
+  },
+  {
+    id: 998,
+    nome: 'Webcam Full HD',
+    preco: 150.00,
+    estoque: 35,
+    categoria: 'Periféricos'
+  },
+  {
+    id: 999,
+    nome: 'Smartphone Android',
+    preco: 1200.00,
+    estoque: 20,
+    categoria: 'Eletrônicos'
+  }
+];
+
+// let info = {id: id, nome: pNome.value, preco: preco, estoque: estoque, categoria: pCategoria.value }
 
 // variaveis globais
 let idCounter = 1000;
@@ -8,7 +81,7 @@ const listaProdutos = document.getElementById('produtos');
 // funções relacionadas ao cadastro de produtos
 
 // No HTML adicionar um onclick="cadastrarProduto()"
-function cadastrarProduto(produto /* perguntar pro professor se precisa passar parametro*/ ){
+function cadastrarProduto(){
     // adicionar no HTML campos de input para as variaveis abaixo, nesses inputs adicionar o valor de id
     // igual ao valor presente entre aspas simples.
     const pNome = document.getElementById('nome');
@@ -340,3 +413,7 @@ function fecharPedido() {
 
     return "Pedido finalizado com sucesso";
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    listarProdutos();
+});
