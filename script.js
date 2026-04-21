@@ -225,12 +225,12 @@ function listarProdutos(lista = produtos){
         row.innerHTML = `
             <td>${produto.id}</td>
             <td>${produto.nome}</td>
-            <td>${produto.preco}</td>
+            <td>R$ ${produto.preco}</td>
             <td>${produto.estoque}</td>
             <td>${produto.categoria}</td>
             <td class=""> 
-                <button onclick="editarProduto(${produto.id})">Editar</button>
-                <button onclick="excluirProduto(${produto.id})">Excluir</button>
+                <button onclick="editarProduto(${produto.id})" class="sucess">Editar</button>
+                <button onclick="excluirProduto(${produto.id})" class="danger">Excluir</button>
             </td>
         `;
 

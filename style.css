@@ -1,3 +1,90 @@
+h1, h2{
+  text-align: center;
+}
+
+h3{
+  width: 100%;
+  text-align: center;
+}
+
+body{
+  background-color: whitesmoke;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+button{
+    padding: 0.4em;
+    border-radius: 5px;
+    height: 4.5vh;
+    align-self: center;
+}
+
+.danger{
+    background-color: #cf1919;
+    color: #fff;
+    border: none;
+}
+.danger:hover{
+    background-color: #a61414;
+}
+.sucess{
+    background-color: #63e74b;
+    color: black;
+    border: 1px solid #828282;
+}
+.sucess:hover{
+    background-color: #228511;
+    color: white;
+}
+
+.alert{
+    background-color: #ebe83b;
+    color: black;
+    border: 1px solid #828282;
+}
+.alert:hover{
+    background-color: #b9aa0b;
+}
+
+input, select{
+    padding: 0.3% 0.5%;
+    width: 13vw;
+    height: 5%;
+    border-radius: 10px;
+    border: 1px solid #636363;
+    align-self: center;
+}
+
+label{
+  align-self: center;
+}
+
+table{
+    border-collapse: collapse;
+    width: 70vw;
+    margin: auto;
+}
+
+table th{
+    background-color: #63e74b;
+}
+table td, th{
+    border: 1px solid #656565;
+    padding: 0.5em 1em;
+    text-align: center;
+} 
+
+.flex{
+  display: flex;
+  column-gap: 1%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.center{
+  display: block;
+  margin: 0 auto;
+}
+
 .modal {
   display: none; /* começa escondido */
   position: fixed;
@@ -10,8 +97,23 @@
 
 .modal-conteudo {
   background: white;
-  padding: 20px;
+  padding: 10px 5px 20px;
   margin: 10% auto;
-  width: 300px;
+  width: 350px;
   border-radius: 8px;
+}
+
+.botoes-modal{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.form-group-modal input, .form-group-modal select{
+  width: 65%;
+  height: 20px;
+  padding-left: 2%;
+}
+
+.form-group-modal{
+  margin: 5% 15%;
 }

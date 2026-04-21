@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sistema de Gestão de Pedidos (Loja Online)</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Sistema de Vendas</h1>
+    <h1>Sistema de Gestão de Pedidos (Loja Online)</h1>
 
     <section>
-    <form id="FormCadastro" onsubmit="event.preventDefault();">
+    <form id="FormCadastro" onsubmit="event.preventDefault();" class="flex">
             <label>Nome:</label>
             <input type="text" id="nome" required>
 
             <label>Preço (R$):</label>
-            <input type="number" id="preco" step="0.01" required>
+            <input type="number" id="preco" step="0.01" min="0.01" required>
 
             <label>Estoque:</label>
-            <input type="number" id="estoque" required>
+            <input type="number" id="estoque" min="1" required>
 
             <label>Categoria:</label>
             <select id="categoria">
@@ -29,14 +29,14 @@
             </select>
 
             <br><br>
-            <button type="button" onclick="cadastrarProduto()">Cadastrar Produto</button>
+            <button type="button" onclick="cadastrarProduto()" class="sucess">Cadastrar Produto</button>
         </form>
     </section>
 
-    <div>
+    <div class="flex">
             <input type="text" id="search" placeholder="Digite o ID">
-            <button onclick="buscar()">Buscar Produto</button>
-            <button onclick="listarProdutos()">Limpar Busca</button>
+            <button onclick="buscar()" class="sucess">Buscar Produto</button>
+            <button onclick="listarProdutos()" class="alert">Limpar Busca</button>
         </div>
         <br>
 
@@ -56,17 +56,17 @@
     <section>
         <h2>Seu Carrinho de Compras</h2>
         
-        <div>
+        <div class="flex">
             <h3>Adicionar Item</h3>
             <input type="number" id="idProdutoCarrinho" placeholder="ID do Produto">
             <input type="number" id="quantidadeCarrinho" placeholder="Quantidade">
-            <button onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
+            <button onclick="adicionarAoCarrinho()" class="sucess">Adicionar ao Carrinho</button>
         </div>
 
-        <div>
+        <div class="flex">
             <h3>Remover Item</h3>
             <input type="number" id="idRemoverCarrinho" placeholder="ID do Produto no Carrinho">
-            <button onclick="removerDoCarrinho()">Remover do Carrinho</button>
+            <button onclick="removerDoCarrinho()" class="danger">Remover do Carrinho</button>
         </div>
     </section>
 
@@ -74,11 +74,13 @@
 
     <section>
         <h2>Finalizar Compra</h2>
-        <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
-        <input type="text" id="cupomDesconto" placeholder="Cupom (Ex: DESC10)">
+        <div class="flex">
+            <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
+            <input type="text" id="cupomDesconto" placeholder="Cupom (Ex: DESC10)">
+        </div>
         
         <br><br>
-        <button onclick="fecharPedido()">Fechar Pedido</button>
+        <button onclick="fecharPedido()" class="center sucess" >Fechar Pedido</button>
     </section>
     
     <div id="modalEdicao" class="modal">
@@ -114,8 +116,8 @@
 
             <br>
             <div class="botoes-modal">
-                <button onclick="atualizarProduto()">Salvar</button>
-                <button onclick="document.getElementById('modalEdicao').style.display='none'">Cancelar</button>
+                <button onclick="atualizarProduto()" class="sucess">Salvar</button>
+                <button onclick="document.getElementById('modalEdicao').style.display='none'" class="alert">Cancelar</button>
             </div>
         </div>
     </div>
