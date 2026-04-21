@@ -246,7 +246,7 @@ function buscarProdutoPorId(id){
     );
 
     if(resultado.length === 0){
-        listarProdutos([]);
+        alert("Erro: Produto não encontrado no catálogo!");
         return "Produto não encontrado";
     }
 
@@ -257,6 +257,11 @@ function buscarProdutoPorId(id){
 function buscar(){
     const valor = document.getElementById("search").value;
     buscarProdutoPorId(valor);
+}
+
+function limparBusca(){
+    document.getElementById("search").value = '';
+    listarProdutos();
 }
 
 // funções relacionadas ao carrinho de compras
