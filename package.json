@@ -1,0 +1,26 @@
+{
+  "name": "n1-teste-de-software",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nogitsune00/n1-teste-de-software.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Nogitsune00/n1-teste-de-software/issues"
+  },
+  "homepage": "https://github.com/Nogitsune00/n1-teste-de-software#readme",
+  "devDependencies": {
+    "install": "^0.13.0",
+    "jest": "^30.3.0",
+    "npm": "^11.12.1"
+  }
+}
