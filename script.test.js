@@ -49,7 +49,7 @@ function carregarSistemaTestavel() {
         'document',
         'alert',
         'confirm',
-        `${source}\nreturn { cadastrarProduto, excluirProduto, editarProduto, atualizarProduto, listarProdutos, buscarProdutoPorId };`
+        `${source}\nreturn { cadastrarProduto, excluirProduto, editarProduto, atualizarProduto, listarProdutos, buscarProdutoPorId, aplicarCupom };`
     );
 
     const sistema = factory(documentMock, alertMock, confirmMock);
@@ -279,6 +279,49 @@ describe("Funcao editarProduto", () => {
 
 })
 
-    
+// Fechamento de pedido
+
+describe("Funcao aplicarCupom", () => {
+
+    let sistema;
+    let documentMock;
+    let alertMock;  
+
+    beforeEach(() => {
+        const loaded = carregarSistemaTestavel();
+        sistema = loaded.sistema;
+        documentMock = loaded.documentMock;
+        alertMock = loaded.alertMock;
+    });   
+
+    test("deve aplicar desconto de 10% quando cupom for DESC10", () => {
+        const resultado = sistema.aplicarCupom(200, 'DESC10');
+
+        expect(resultado).toBe(180);
+        expect(alertMock).not.toHaveBeenCalled();
+    });
+
+    test("deve retornar valor original quando cupom estiver vazio", () => {
+        const resultado = sistema.aplicarCupom(200, '');
+
+        expect(resultado).toBe(200);
+        expect(alertMock).not.toHaveBeenCalled();
+    });
+
+    test("deve retornar erro de cupom invalido para codigo desconhecido", () => {
+        const resultado = sistema.aplicarCupom(200, 'DESCONTO10');
+
+        expect(resultado).toBe('Cupom inválido');
+        expect(alertMock).toHaveBeenCalledWith('Erro: Cupom inválido.');
+    });
+
+    test("deve aceitar total zero com cupom valido sem gerar erro", () => {
+        const resultado = sistema.aplicarCupom(0, 'DESC10');
+
+        expect(resultado).toBe(0);
+        expect(alertMock).not.toHaveBeenCalled();
+    });
+
+})
 
 
