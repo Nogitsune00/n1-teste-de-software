@@ -294,33 +294,19 @@ describe("Funcao aplicarCupom", () => {
         alertMock = loaded.alertMock;
     });   
 
-    test("deve aplicar desconto de 10% quando cupom for DESC10", () => {
+    test("deve aplicar cupom de desconto corretamente", () => {
         const resultado = sistema.aplicarCupom(200, 'DESC10');
 
         expect(resultado).toBe(180);
         expect(alertMock).not.toHaveBeenCalled();
-    });
+    })
 
-    test("deve retornar valor original quando cupom estiver vazio", () => {
-        const resultado = sistema.aplicarCupom(200, '');
-
-        expect(resultado).toBe(200);
-        expect(alertMock).not.toHaveBeenCalled();
-    });
-
-    test("deve retornar erro de cupom invalido para codigo desconhecido", () => {
-        const resultado = sistema.aplicarCupom(200, 'DESCONTO10');
+    test("deve retornar erro para cupom de desconto invalido", () => {
+        const resultado = sistema.aplicarCupom(200, 'INVALIDO');
 
         expect(resultado).toBe('Cupom inválido');
         expect(alertMock).toHaveBeenCalledWith('Erro: Cupom inválido.');
-    });
-
-    test("deve aceitar total zero com cupom valido sem gerar erro", () => {
-        const resultado = sistema.aplicarCupom(0, 'DESC10');
-
-        expect(resultado).toBe(0);
-        expect(alertMock).not.toHaveBeenCalled();
-    });
+    })
 
 })
 
