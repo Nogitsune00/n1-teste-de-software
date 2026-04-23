@@ -603,7 +603,7 @@ describe("Funcao aplicarCupom", () => {
         expect(resultado).toBe(200);
     })
 
-    test("deve retornar valor original quando cupom for null", () => {
+    test("deve retornar erro quando cupom for null", () => {
         const resultado = sistema.aplicarCupom(200, null);
         expect(resultado).toBe('Cupom inválido');
         expect(alertMock).toHaveBeenCalledWith('Erro: Cupom inválido.');
