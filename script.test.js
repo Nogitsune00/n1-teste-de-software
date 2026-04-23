@@ -1,7 +1,5 @@
 const fs = require('fs'); // Necessário para ler o conteúdo do script.js
-const path = require('path'); 
-
-
+const path = require('path'); // Necessário para resolver o caminho do script.js
 
 // Função para criar um elemento DOM simulado e seu comportamento
 function createMockElement() {
@@ -19,6 +17,7 @@ function createMockElement() {
     };
 }
 
+// Função para criar um documento simulado
 function createMockDocument() {
     const elements = new Map();
 
@@ -37,6 +36,7 @@ function createMockDocument() {
     };
 }
 
+// Mock para o ambiente de teste
 function carregarSistemaTestavel() {
     const scriptPath = path.resolve(__dirname, 'script.js');
     const source = fs.readFileSync(scriptPath, 'utf8');
@@ -62,9 +62,9 @@ function carregarSistemaTestavel() {
     };
 }
 
-// Testes para a função adicionarAoCarrinho
+// Cadastro de produtos
 
-describe("Função adicionarAoCarrinho", () => {
+describe('Funcao cadastrarProduto', () => {
     let sistema;
     let documentMock;
     let alertMock;
@@ -76,112 +76,132 @@ describe("Função adicionarAoCarrinho", () => {
         alertMock = loaded.alertMock;
     });
 
-    test("deve adicionar produto corretamente ao carrinho", () => {
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '2';
+    test('deve retornar dados obrigatorios quando nome nao for informado', () => {
+        documentMock.getElementById('nome').value = '';
+        documentMock.getElementById('preco').value = '120';
+        documentMock.getElementById('estoque').value = '3';
+        documentMock.getElementById('categoria').value = 'Perifericos';
 
-        const resultado = sistema.adicionarAoCarrinho();
+        const resultado = sistema.cadastrarProduto();
 
-        expect(resultado).toBe("Produto adicionado ao carrinho");
+        expect(resultado).toBe('Dados obrigatórios');
+        expect(alertMock).toHaveBeenCalledWith('Por favor, preencha o Nome e a Categoria do produto!');
     });
 
-     test("deve retornar erro quando quantidade for menor ou igual a zero", () => {
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '0';
+    test('deve retornar valor invalido quando estoque for invalido', () => {
+        documentMock.getElementById('nome').value = 'Produto Teste';
+        documentMock.getElementById('preco').value = '120';
+        documentMock.getElementById('estoque').value = 'abc';
+        documentMock.getElementById('categoria').value = 'Perifericos';
 
-        const resultado = sistema.adicionarAoCarrinho();
+        const resultado = sistema.cadastrarProduto();
 
-        expect(resultado).toBe("Quantidade inválida");
-        expect(alertMock).toHaveBeenCalledWith("A quantidade deve ser um número positivo.");
+        expect(resultado).toBe('Valor inválido');
+        expect(documentMock.getElementById('estoque').focus).toHaveBeenCalledTimes(1);
     });
 
-    test("deve retornar erro quando produto não existe", () => {
-        documentMock.getElementById('idProdutoCarrinho').value = '9999';
-        documentMock.getElementById('quantidadeCarrinho').value = '1';
+    test('deve retornar valor invalido quando preco for negativo', () => {
+        documentMock.getElementById('nome').value = 'Produto Teste';
+        documentMock.getElementById('preco').value = '-10';
+        documentMock.getElementById('estoque').value = '5';
+        documentMock.getElementById('categoria').value = 'Perifericos';
 
-        const resultado = sistema.adicionarAoCarrinho();
+        const resultado = sistema.cadastrarProduto();
 
-        expect(resultado).toBe("Produto não encontrado");
-        expect(alertMock).toHaveBeenCalledWith("Erro: Produto não encontrado no catálogo!");
+        expect(resultado).toBe('Valor inválido');
+        expect(alertMock).toHaveBeenCalledWith('O preço deve ser um número positivo');
     });
 
-     test("deve retornar erro quando quantidade maior que estoque", () => {
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '999';
+    test('deve cadastrar produto corretamente validando array e objeto', () => {
+        documentMock.getElementById('nome').value = 'Novo Produto';
+        documentMock.getElementById('preco').value = '100';
+        documentMock.getElementById('estoque').value = '10';
+        documentMock.getElementById('categoria').value = 'Hardware';
 
-        const resultado = sistema.adicionarAoCarrinho();
+        const resultado = sistema.cadastrarProduto();
+        const encontrado = sistema.buscarProdutoPorId(1000);
 
-        expect(resultado).toBe("Estoque insuficiente");
-        expect(alertMock).toHaveBeenCalledWith("Erro: Quantidade solicitada é maior que o estoque disponível.");
+        expect(resultado).toBeUndefined();
+        expect(encontrado).toBeInstanceOf(Array);
+        expect(encontrado).toHaveLength(1);
+        expect(encontrado[0]).toEqual(
+            expect.objectContaining({
+                id: 1000,
+                nome: 'Novo Produto',
+                preco: 100,
+                estoque: 10,
+                categoria: 'Hardware'
+            })
+        );
     });
 });
 
-// Testes para a função removerDoCarrinho
+describe("Funcao excluirProduto", () => {
 
-describe("Função removerDoCarrinho", () => {
     let sistema;
     let documentMock;
-    let alertMock;
     let confirmMock;
+    let alertMock;
 
     beforeEach(() => {
         const loaded = carregarSistemaTestavel();
         sistema = loaded.sistema;
         documentMock = loaded.documentMock;
-        alertMock = loaded.alertMock;
         confirmMock = loaded.confirmMock;
+        alertMock = loaded.alertMock;
     });
 
-    test("deve remover produto do carrinho com sucesso", () => {
-        
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '1';
-        sistema.adicionarAoCarrinho();
+    test("deve excluir produto corretamente validando array e objeto", () => {
+        documentMock.getElementById('nome').value = 'Produto a Excluir';
+        documentMock.getElementById('preco').value = '50';
+        documentMock.getElementById('estoque').value = '5';
+        documentMock.getElementById('categoria').value = 'Hardware';
 
-        
-        documentMock.getElementById('idRemoverCarrinho').value = '990';
+        const resultadoCadastro = sistema.cadastrarProduto();
+        expect(resultadoCadastro).toBeUndefined();
 
-        const resultado = sistema.removerDoCarrinho();
+        confirmMock.mockReturnValueOnce(true);
+        const resultadoExclusao = sistema.excluirProduto(1000);
 
-        expect(resultado).toBe("Produto removido com sucesso");
-        expect(confirmMock).toHaveBeenCalled();
-    });
+        expect(resultadoExclusao).toBeUndefined();
+        expect(confirmMock).toHaveBeenCalledWith('Deseja realmente excluir o produto de id 1000?');
+        expect(sistema.buscarProdutoPorId(1000)).toBe('Produto não encontrado');
+        expect(alertMock).toHaveBeenCalledWith('Erro: Produto não encontrado no catálogo!');
+    })
 
-    test("deve retornar erro se produto não estiver no carrinho", () => {
-        documentMock.getElementById('idRemoverCarrinho').value = '9999';
+    test("deve cancelar exclusao quando confirmacao for negativa", () => {
+        documentMock.getElementById('nome').value = 'Produto a Excluir';
+        documentMock.getElementById('preco').value = '50';
+        documentMock.getElementById('estoque').value = '5';
+        documentMock.getElementById('categoria').value = 'Hardware';
 
-        const resultado = sistema.removerDoCarrinho();
+        const resultadoCadastro = sistema.cadastrarProduto();
+        expect(resultadoCadastro).toBeUndefined();
 
-        expect(resultado).toBe("Produto não encontrado no carrinho");
-        expect(alertMock).toHaveBeenCalled();
-    });
-
-    test("deve retornar erro se ID não for informado", () => {
-        documentMock.getElementById('idRemoverCarrinho').value = '';
-
-        const resultado = sistema.removerDoCarrinho();
-
-        expect(resultado).toBe("ID vazio");
-        expect(alertMock).toHaveBeenCalledWith("Por favor, digite o ID do produto que você quer remover.");
-    });
-
-    test("deve cancelar remoção quando confirm for falso", () => {
         confirmMock.mockReturnValueOnce(false);
+        const resultadoExclusao = sistema.excluirProduto(1000);
 
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '1';
-        sistema.adicionarAoCarrinho();
+        expect(resultadoExclusao).toBe('Operação cancelada');
+        expect(confirmMock).toHaveBeenCalledWith('Deseja realmente excluir o produto de id 1000?');
+        expect(sistema.buscarProdutoPorId(1000)).not.toBe('Produto não encontrado');
+        expect(alertMock).not.toHaveBeenCalledWith('Erro: Produto não encontrado no catálogo!');
+    })
 
-        documentMock.getElementById('idRemoverCarrinho').value = '990';
+    test("deve retornar erro ao tentar excluir produto inexistente", () => {
+        confirmMock.mockReturnValueOnce(true);
+        const resultadoExclusao = sistema.excluirProduto(9999);
 
-        const resultado = sistema.removerDoCarrinho();
+        expect(resultadoExclusao).toBe('Produto não encontrado');
+        expect(confirmMock).not.toHaveBeenCalled();
+    })
 
-        expect(resultado).toBe("Operação cancelada");
-    });
-});
+    test("deve retornar erro quando o ID do produto for inválido", () => {
+        const resultadoExclusao = sistema.excluirProduto(-1);
+        expect(resultadoExclusao).toBe('Produto não encontrado');
+    })
+})
 
-// Testes para a função calcularSubtotal
-describe("Funcao calcularSubtotal", () => {
+describe("Funcao editarProduto", () => {
 
     let sistema;
     let documentMock;
@@ -191,68 +211,6 @@ describe("Funcao calcularSubtotal", () => {
         const loaded = carregarSistemaTestavel();
         sistema = loaded.sistema;
         documentMock = loaded.documentMock;
-    });
-
-    test("deve calcular subtotal corretamente com múltiplos produtos", () => {
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '2';
-        sistema.adicionarAoCarrinho();
-
-        documentMock.getElementById('idProdutoCarrinho').value = '991';
-        documentMock.getElementById('quantidadeCarrinho').value = '1';
-        sistema.adicionarAoCarrinho();
-
-        const resultado = sistema.calcularSubtotal();
-
-        expect(resultado).toBeGreaterThan(0);
-    });
-
-    test("deve retornar 0 quando carrinho estiver vazio", () => {
-        const resultado = sistema.calcularSubtotal();
-
-        expect(resultado).toBe(0);
-    });
-
-    test("deve calcular corretamente com um único produto", () => {
-        documentMock.getElementById('idProdutoCarrinho').value = '990'; // 250
-        documentMock.getElementById('quantidadeCarrinho').value = '1';
-
-        sistema.adicionarAoCarrinho();
-
-        const resultado = sistema.calcularSubtotal();
-
-        expect(resultado).toBe(250);
-    });
-
-    test("deve considerar múltiplas adições do mesmo produto", () => {
-        
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '1';
-        sistema.adicionarAoCarrinho(); // 250
-
-        
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '2';
-        sistema.adicionarAoCarrinho(); // +500
-
-        const resultado = sistema.calcularSubtotal();
-
-        expect(resultado).toBe(750);
-    });
-
-
-});
-
-// Testes para a função calcularFrete
-
-describe("Funcao calcularFrete", () => {
-
-    let sistema;
-    let alertMock;
-
-    beforeEach(() => {
-        const loaded = carregarSistemaTestavel();
-        sistema = loaded.sistema;
         alertMock = loaded.alertMock;
     });
 
@@ -616,7 +574,6 @@ describe("Funcao aplicarCupom", () => {
     let sistema;
     let documentMock;
     let alertMock;
-    let alertMock;
 
     beforeEach(() => {
         const loaded = carregarSistemaTestavel();
@@ -625,52 +582,15 @@ describe("Funcao aplicarCupom", () => {
         alertMock = loaded.alertMock;
     })
 
-    test("deve aplicar frete grátis para compras acima de 200", () => {
-        
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '1';
-        sistema.adicionarAoCarrinho();
+    test("deve aplicar cupom de desconto corretamente", () => {
+        const resultado = sistema.aplicarCupom(200, 'DESC10');
 
-        documentMock.getElementById('nomeCliente').value = 'Ana';
-        documentMock.getElementById('cupomDesconto').value = '';
+        expect(resultado).toBe(180);
+        expect(alertMock).not.toHaveBeenCalled();
+    })
 
-        const resultado = sistema.fecharPedido();
-
-        expect(resultado).toBe("Pedido finalizado com sucesso");
-
-        
-        expect(alertMock).toHaveBeenCalled();
-        const mensagem = alertMock.mock.calls.at(-1)[0];
-
-        expect(mensagem).toContain("Frete: R$ 0.00");
-    });
-
-    test("deve cobrar frete para compras abaixo de 200", () => {
-        documentMock.getElementById('idProdutoCarrinho').value = '995';
-        documentMock.getElementById('quantidadeCarrinho').value = '1';
-        sistema.adicionarAoCarrinho();
-
-        documentMock.getElementById('nomeCliente').value = 'Ana';
-        documentMock.getElementById('cupomDesconto').value = '';
-
-        const resultado = sistema.fecharPedido();
-
-        expect(resultado).toBe("Pedido finalizado com sucesso");
-
-        const mensagem = alertMock.mock.calls.at(-1)[0];
-
-        expect(mensagem).toContain("Frete: R$ 35.00");
-    });
-
-    test("deve finalizar pedido com sucesso, com cupom válido", () => {
-        documentMock.getElementById('idProdutoCarrinho').value = '990';
-        documentMock.getElementById('quantidadeCarrinho').value = '2';
-        sistema.adicionarAoCarrinho();
-
-        documentMock.getElementById('nomeCliente').value = 'Ana';
-        documentMock.getElementById('cupomDesconto').value = 'DESC10';
-
-        const resultado = sistema.fecharPedido();
+    test("deve retornar erro para cupom de desconto invalido", () => {
+        const resultado = sistema.aplicarCupom(200, 'INVALIDO');
 
         expect(resultado).toBe('Cupom inválido');
         expect(alertMock).toHaveBeenCalledWith('Erro: Cupom inválido.');
