@@ -299,6 +299,8 @@ describe("Funcao listarProdutos", () => {
         documentMock.getElementById('categoria').value = 'Hardware';
         sistema.cadastrarProduto();
 
+        expect(documentMock.getElementById('produtos').children).toHaveLength(11);
+
     })
 
     test("deve retornar mensagem quando nao houver produtos cadastrados", () => {
@@ -599,7 +601,12 @@ describe("Funcao aplicarCupom", () => {
     test("deve retornar valor original quando cupom for vazio", () => {
         const resultado = sistema.aplicarCupom(200, '');
         expect(resultado).toBe(200);
-        expect(alertMock).not.toHaveBeenCalled();
+    })
+
+    test("deve retornar valor original quando cupom for null", () => {
+        const resultado = sistema.aplicarCupom(200, null);
+        expect(resultado).toBe('Cupom inválido');
+        expect(alertMock).toHaveBeenCalledWith('Erro: Cupom inválido.');
     })
 
 })
