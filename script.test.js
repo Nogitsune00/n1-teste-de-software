@@ -1,62 +1,42 @@
-const fs = require('fs'); // Necessário para ler o conteúdo do script.js
-const path = require('path'); // Necessário para resolver o caminho do script.js
-
-// Função para criar um elemento DOM simulado e seu comportamento
-function createMockElement() {
-    return {
-        value: '',
-        style: { display: 'none' },
-        innerHTML: '',
-        children: [],
-        focus: jest.fn(),
-        reset: jest.fn(),
-        appendChild(child) {
-            this.children.push(child);
-            return child;
-        }
-    };
-}
-
-// Função para criar um documento simulado
-function createMockDocument() {
-    const elements = new Map();
-
-    const getElementById = (id) => {
-        if (!elements.has(id)) {
-            elements.set(id, createMockElement());
-        }
-        return elements.get(id);
-    };
-
-    return {
-        getElementById,
-        createElement: jest.fn(() => createMockElement()),
-        addEventListener: jest.fn(),
-        _elements: elements
-    };
-}
-
 // Mock para o ambiente de teste
 function carregarSistemaTestavel() {
-    const scriptPath = path.resolve(__dirname, 'script.js');
-    const source = fs.readFileSync(scriptPath, 'utf8');
+    document.body.innerHTML = `
+        <table id="produtos"></table>
+        <form id="FormCadastro"></form>
+        <input id="nome" />
+        <input id="preco" />
+        <input id="estoque" />
+        <input id="categoria" />
+        <input id="editId" />
+        <input id="editNome" />
+        <input id="editPreco" />
+        <input id="editEstoque" />
+        <input id="editCategoria" />
+        <div id="modalEdicao" style="display:none"></div>
+        <input id="search" />
+        <input id="idProdutoCarrinho" />
+        <input id="quantidadeCarrinho" />
+        <input id="idRemoverCarrinho" />
+        <input id="nomeCliente" />
+        <input id="cupomDesconto" />
+    `;
 
-    const documentMock = createMockDocument();
     const alertMock = jest.fn();
     const confirmMock = jest.fn(() => true);
 
-    const factory = new Function(
-        'document',
-        'alert',
-        'confirm',
-        `${source}\nreturn { cadastrarProduto, excluirProduto, editarProduto, atualizarProduto, listarProdutos, buscarProdutoPorId, adicionarAoCarrinho, removerDoCarrinho, calcularSubtotal, aplicarCupom, calcularFrete, fecharPedido };`
-    );
+    global.alert = alertMock;
+    global.confirm = confirmMock;
 
-    const sistema = factory(documentMock, alertMock, confirmMock);
+    document.querySelectorAll('input').forEach((el) => {
+        el.focus = jest.fn();
+    });
+
+    jest.resetModules();
+    const sistema = require('./script');
 
     return {
         sistema,
-        documentMock,
+        documentMock: document,
         alertMock,
         confirmMock
     };
@@ -225,10 +205,10 @@ describe("Funcao editarProduto", () => {
 
         const resultadoEdicao = sistema.editarProduto(1000);
         expect(resultadoEdicao).toBeUndefined();
-        expect(documentMock.getElementById('editId').value).toBe(1000);
+        expect(documentMock.getElementById('editId').value).toBe('1000');
         expect(documentMock.getElementById('editNome').value).toBe('Produto a Editar');
-        expect(documentMock.getElementById('editPreco').value).toBe(50);
-        expect(documentMock.getElementById('editEstoque').value).toBe(5);
+        expect(documentMock.getElementById('editPreco').value).toBe('50');
+        expect(documentMock.getElementById('editEstoque').value).toBe('5');
         expect(documentMock.getElementById('editCategoria').value).toBe('Hardware');
         expect(documentMock.getElementById('modalEdicao').style.display).toBe('block');
     })
@@ -299,8 +279,9 @@ describe("Funcao listarProdutos", () => {
         documentMock.getElementById('categoria').value = 'Hardware';
         sistema.cadastrarProduto();
 
-        expect(documentMock.getElementById('produtos').children).toHaveLength(11);
-
+        const rows = documentMock.getElementById('produtos').querySelectorAll('tr');
+        expect(rows).toHaveLength(12);
+        expect(rows[rows.length - 1].textContent).toContain('Produto 1');
     })
 
     test("deve retornar mensagem quando nao houver produtos cadastrados", () => {
@@ -321,8 +302,9 @@ describe("Funcao listarProdutos", () => {
         const resultado = sistema.cadastrarProduto();
 
         expect(resultado).toBeUndefined();
-        expect(documentMock.getElementById('produtos').children).toHaveLength(11);
-
+        const rows = documentMock.getElementById('produtos').querySelectorAll('tr');
+        expect(rows).toHaveLength(12);
+        expect(rows[rows.length - 1].textContent).toContain('Produto 1');
     })
 
     test("deve retornar mensagem quando o produto for excluido", () => {

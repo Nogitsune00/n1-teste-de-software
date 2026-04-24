@@ -410,3 +410,18 @@ function fecharPedido() {
 document.addEventListener("DOMContentLoaded", () => {
     listarProdutos();
 });
+
+module.exports = {
+    cadastrarProduto,
+    excluirProduto,
+    editarProduto,
+    atualizarProduto,
+    listarProdutos,
+    buscarProdutoPorId,
+    adicionarAoCarrinho,
+    removerDoCarrinho,
+    calcularSubtotal,
+    aplicarCupom,
+    calcularFrete,
+    fecharPedido
+};
